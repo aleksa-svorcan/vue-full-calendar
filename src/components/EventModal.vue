@@ -1,5 +1,5 @@
 <template>
-  <div ref="EventModal">
+  <div class="event-modal q-pa-md" ref="EventModal">
     <div>
       <p>Event details</p>
       <p>{{event.title}}</p>
@@ -7,20 +7,21 @@
       <p>{{event.end}}</p>
       <p>{{event.id}}</p>
     </div>
-    <div>
-      <p>Edit event</p>
-      <div class="flex justify-between items-center">
-        <q-input filled v-model="title" label="Event Name" ></q-input>
-        <q-btn v-if="exists" @click="updateEvent">Update</q-btn>
-        <q-btn v-if="exists" @click="deleteEvent">Delete</q-btn>
-        <q-btn v-else @click="createEvent">Create</q-btn>
+    <div class="column justify-between">
+      <p v-if="exists">Edit event</p>
+      <p v-else>Create Event</p>
+      <div class="row justify-between items-center">
+        <q-input class="col-12" v-model="title" label="Event Description" ></q-input>
+        <q-select class="col-12" v-model="chosenBrand" :options="brands" label="Choose brand" ></q-select>
+        <q-btn color="primary" v-if="exists" @click="updateEvent">Update</q-btn>
+        <q-btn color="red" v-if="exists" @click="deleteEvent">Delete</q-btn>
+        <q-btn color="primary" v-else @click="createEvent">Create</q-btn>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-  import {mapGetters} from 'vuex'
 
   export default {
     name: 'EventModal',
@@ -31,10 +32,13 @@
         title: '',
         start: {},
         end: {},
+        chosenBrand: null,
+        brands: [
+          'Google', 'Facebook', 'Twitter', 'Apple', 'Oracle'
+        ]
       }
     },
     props: {
-      text: String,
       event: Object
     },
     mounted() {
@@ -68,13 +72,16 @@
       checkIfExists (id) {
         let el =  this.$store.getters.event(id)
         if(typeof el === 'object') {
-          this.exists = true
-        }
-        else {
-          this.exists = false
+          this.exists = true;
         }
       }
     }
   }
 
 </script>
+<style lang="scss" scoped>
+  .event-modal {
+    height: 400px;
+    width: 400px;
+  }
+</style>

@@ -9,6 +9,13 @@
       :weekends="false"
       :selectable="selectable"
       :events="events"
+      :minTime="minTime"
+      :maxTime="maxTime"
+      :slotLabelFormat="slotLabelFormat"
+      :slotDuration="slotDuration"
+      :slotLabelInterval="slotLabelInterval"
+      :datesRender="checkView"
+      :allDaySlot="false"
       @eventClick="handleClick"
       @dateClick="dateClicked"
       @select="handleSelect"
@@ -33,8 +40,19 @@
     },
     data: () => ({
       selectable: false,
+      minTime: "07:00:00",
+      maxTime: "21:00:00",
+      slotDuration: '00:15:00',
+      slotLabelInterval: 15,
+      slotLabelFormat: [
+        {
+          hour: '2-digit',
+          minute: '2-digit',
+          hour12:false
+        }
+      ],
       header: {
-        center: 'dayGridMonth, dayGridWeek, timeGridDay, listMonth',
+        center: 'dayGridMonth, dayGridWeek, timeGridDay',
         right: 'title',
         left: 'prev today next'
       },
@@ -55,15 +73,10 @@
     }),
     computed: {
       ...mapGetters(['events']),
-      checkView() {
-        let calendar = this.$refs.calendar.getApi()
-        console.log('view', calendar.fullCalendar( 'getView' ))
-        return calendar.fullCalendar( 'getView' )
-      }
     },
     methods: {
       dateClicked(event) {
-        let calendar = this.$refs.calendar.getApi()
+       let calendar = this.$refs.calendar.getApi()
         calendar.gotoDate(event.dateStr)
         calendar.changeView('timeGridDay')
         this.selectable = true
@@ -82,8 +95,8 @@
           id: event.id
         })
       },
-      updateEvent (event) {
-        this.$store.commit('UPDATE_EVENT', event.event)
+      checkView (event) {
+        event.view.type === "dayGridMonth" || event.view.type === "dayGridWeek" ? this.selectable = false : this.selectable = true
       }
     }
   }

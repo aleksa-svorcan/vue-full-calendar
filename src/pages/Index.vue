@@ -1,6 +1,8 @@
 <template>
   <q-page class="flex flex-center">
-    <calendar/>
+    <div class="calendar-container">
+      <calendar/>
+    </div>
   </q-page>
 </template>
 
@@ -19,3 +21,9 @@ export default {
   }
 }
 </script>
+<style lang="scss" scoped>
+  .calendar-container {
+    width: 50%;
+    height: 50%;
+  }
+</style>
