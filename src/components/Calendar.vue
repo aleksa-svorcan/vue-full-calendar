@@ -1,30 +1,37 @@
 <template>
-  <div class="calendar-layout">
-    <full-calendar
-      ref="calendar"
-      locale="en"
-      :plugins="calendarPlugins"
-      :header="header"
-      :buttonText="buttonText"
-      :weekends="false"
-      :selectable="selectable"
-      :events="events"
-      :minTime="minTime"
-      :maxTime="maxTime"
-      :slotLabelFormat="slotLabelFormat"
-      :slotDuration="slotDuration"
-      :slotLabelInterval="slotLabelInterval"
-      :datesRender="checkView"
-      :allDaySlot="false"
-      @eventClick="handleClick"
-      @dateClick="dateClicked"
-      @select="handleSelect"
-    />
+  <div class="calendar-layout row">
+    <div class="col-9">
+      <full-calendar
+        class="col-10"
+        ref="calendar"
+        locale="en"
+        :plugins="calendarPlugins"
+        :header="header"
+        :buttonText="buttonText"
+        :weekends="false"
+        :selectable="selectable"
+        :events="events"
+        :minTime="minTime"
+        :maxTime="maxTime"
+        :slotLabelFormat="slotLabelFormat"
+        :slotDuration="slotDuration"
+        :slotLabelInterval="slotLabelInterval"
+        :datesRender="checkView"
+        :allDaySlot="false"
+        @eventClick="handleClick"
+        @dateClick="dateClicked"
+        @select="handleSelect"
+      />
+    </div>
+    <div class="col-3 column items-center">
+      <date-picker @range="checkValidRange"/>
+    </div>
     <modals-container />
   </div>
 </template>
 
 <script>
+
   import {mapGetters} from 'vuex'
   import FullCalendar from '@fullcalendar/vue'
   import DayGridPlugin from '@fullcalendar/daygrid'
@@ -33,10 +40,15 @@
   import ListPlugin from '@fullcalendar/list'
   import EventModal from "./EventModal";
 
+  import DatePicker from "./DatePicker";
+
+  let calendar
+
   export default {
     name: 'Calendar',
     components: {
-      FullCalendar
+      FullCalendar,
+      DatePicker
     },
     data: () => ({
       selectable: false,
@@ -71,12 +83,14 @@
       ],
 
     }),
+    mounted() {
+      calendar = this.$refs.calendar.getApi()
+    },
     computed: {
       ...mapGetters(['events']),
     },
     methods: {
       dateClicked(event) {
-       let calendar = this.$refs.calendar.getApi()
         calendar.gotoDate(event.dateStr)
         calendar.changeView('timeGridDay')
         this.selectable = true
@@ -94,6 +108,11 @@
           event: event.event,
           id: event.id
         })
+      },
+      checkValidRange (range) {
+        console.log('emit worked', range)
+        calendar.setOption('validRange', range)
+        calendar.setOption( 'visibleRange', range)
       },
       checkView (event) {
         event.view.type === "dayGridMonth" || event.view.type === "dayGridWeek" ? this.selectable = false : this.selectable = true

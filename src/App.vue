@@ -5,7 +5,11 @@
 </template>
 
 <script>
-export default {
+  import Vue from 'vue'
+  import moment from 'vue-moment'
+  Vue.use(moment);
+
+  export default {
   name: 'App'
 }
 </script>

@@ -23,7 +23,7 @@ export default {
 </script>
 <style lang="scss" scoped>
   .calendar-container {
-    width: 50%;
-    height: 50%;
+    width: 70%;
+    height: 70%;
   }
 </style>
